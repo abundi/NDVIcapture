@@ -3,8 +3,18 @@ import cv2
 from matplotlib import pyplot as plt
 
 
-imgNIR = cv2.imread('b1.jpg',1) #0 gray #1color
-imgRGB = cv2.imread('b2.jpg',1)
+
+def colorGradeBG(ndvi):
+	return (255.0 * (1 - ndvi),255.0 * ndvi, 0)
+
+def colorGradeBGR(ndvi):
+	if ndvi < 0.5:
+		return (511.0 * (0.5 - ndvi),511.0 * ndvi, 0)
+	else:	
+		return (0, 511.0 * (1 - ndvi), 511.0 * (ndvi - 0.5))
+
+imgNIR = cv2.imread('c1.jpg',1) #0 gray #1color
+imgRGB = cv2.imread('c2.jpg',1)
 
 
 # (b1,ir,g2) = cv2.split(imgNIR)
@@ -27,6 +37,7 @@ cv2.imshow('INFRARED', ir)
 # cv2.waitKey(0)
 
 ndvi = np.zeros(ir.shape,np.uint8)
+ndviRGB = np.zeros(imgRGB.shape,np.uint8)
 
 for x in range (0,ir.shape[0]):
 	for y in range (0,ir.shape[1]):
@@ -39,12 +50,13 @@ for x in range (0,ir.shape[0]):
 		else:
 			fraction  = (numerator / denominator) / 2.0 + 0.5
 		ndvi[x,y] =  int(fraction * 255.0) 
+		ndviRGB[x,y] =  colorGradeBGR(fraction) 
 
 		# ndvi[x,y] =  int(float(ir[x,y] - r[x,y]) / float(ir[x,y] + r[x,y]) * 255.0 )
 
 orb = cv2.ORB()
 
-cv2.imshow('NDVI', ndvi)
+cv2.imshow('NDVI', ndviRGB)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
