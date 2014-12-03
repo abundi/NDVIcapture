@@ -6,6 +6,7 @@ from matplotlib import pyplot as plt
 from win32api import GetSystemMetrics
 
 
+#start is at line 320
 
 # Mouse Listener for the left image
 def LeftIMGclick(event,x,y,flags,param):
